@@ -1,0 +1,49 @@
+# نام Workflow که در تب Actions گیت‌هاب نمایش داده می‌شود
+name: CI/CD Pipeline
+
+# تعیین می‌کند که این Workflow چه زمانی اجرا شود
+on:
+  push:
+    branches: [ main ] # فقط زمانی که به شاخه main پوش می‌شود
+
+# لیست کارها (Jobs) که باید انجام شوند
+jobs:
+  # اولین کار: ساخت پروژه
+  build:
+    # مشخص کردن سیستم‌عاملی که این کار روی آن اجرا می‌شود
+    runs-on: ubuntu-latest
+
+    steps:
+      # مرحله اول: گرفتن کدها از ریپازیتوری
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      # مرحله دوم: اجرای اسکریپت ساخت
+      - name: Build the project
+        run: echo "Building the project..."
+
+  # دومین کار: اجرای تست‌ها
+  test:
+    runs-on: ubuntu-latest
+    # این کار باید بعد از موفقیت‌آمیز بودن کار build اجرا شود
+    needs: build
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Run tests
+        run: echo "Running tests..."
+
+  # سومین کار: دیپلوی کردن برنامه
+  deploy:
+    runs-on: ubuntu-latest
+    # این کار باید بعد از موفقیت‌آمیز بودن کار test اجرا شود
+    needs: test
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v-3
+
+      - name: Deploy application
+        run: echo "Deploying application..."
